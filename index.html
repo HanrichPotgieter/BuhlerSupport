@@ -1,0 +1,94 @@
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
+</head>
+<body ng-app="BlankApp" ng-cloak>
+  <!--
+    Your HTML content here
+  -->  
+  
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">    
+    angular.module('BlankApp', ['ngMaterial']).controller('MainController', ['$scope', function($scope) {
+        $scope.greeting = 'Hola!';
+        $scope.formData = {};
+        // Initialize Firebase
+          // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyADVhvtT3hfK2o3C57ClWtrxQqDNEJhKgw",
+            authDomain: "project-7116083665497437297.firebaseapp.com",
+            databaseURL: "https://project-7116083665497437297.firebaseio.com",
+            storageBucket: "project-7116083665497437297.appspot.com",
+        };
+        firebase.initializeApp(config);
+        
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                $scope.user = user;
+                console.log($scope.user);
+            } else {
+                console.log('No User');
+            }
+        });
+        
+        $scope.submit = function () {
+            console.log($scope.formData.clientEmail);
+            console.log($scope.formData.clientPassword);
+            
+            firebase.auth().signInWithEmailAndPassword($scope.formData.clientEmail,$scope.formData.clientPassword).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ...
+            });
+        };
+        
+    }]);
+  </script>
+  <div ng-controller="MainController">
+  <md-content class="md-padding" layout-xs="column" layout="row">
+    <md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Buhler Automation Portal</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <form ng-submit="submit()">
+                <md-input-container class="md-block">
+                    <label>Company Email</label>
+                    <input required type="email" name="clientEmail" ng-model="formData.clientEmail"
+                        minlength="10" maxlength="200" ng-pattern="/^.+@.+\..+$/" />
+                    <div ng-messages="projectForm.clientEmail.$error" role="alert">
+                    <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">
+                        Your email must be between 10 and 100 characters long and look like an e-mail address.
+                    </div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Password</label>
+                    <input required type="password" name="clientEmail" ng-model="formData.clientPassword"/>
+                </md-input-container>
+                <md-button type="submit" class="md-primary">Log On</md-button>
+            </form>
+        </md-card-content>
+      </md-card>
+   </md-content>
+   </div>
+   <div>
+   {{ user }}    
+   </div>
+</body>
+</html>
